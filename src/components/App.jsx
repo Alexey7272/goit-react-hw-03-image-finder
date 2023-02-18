@@ -12,54 +12,60 @@ import 'react-toastify/dist/ReactToastify.css';
 
 class App extends Component {
   state = {
-    pagesName: '',
-    page: null,
+    query: '',
+    page: 1,
+    images: [],
     loading: false,
     status: 'idle',
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    const prevSearch = prevProps.pagesName;
-    const nextSearch = this.props.pagesName;
+  componentDidUpdate(prevState, prevProps) {
+    const prevSearch = prevState.query;
+    const nextSearch = this.state.query;
 
-    if(prevSearch !== nextSearch) {
+    if(prevSearch !== nextSearch || prevState.page !== this.state.page)  {
 
       this.setState({status: 'pending'})
         pictureApi
          .fetchPicture(nextSearch)
-         .then(page => this.setState({ page, status: 'resolved' }))
+         .then(data => this.setState(prevState => ({ images : [...prevState.images, ...data.hits], status: 'resolved', showBtn: this.state.page < Math.ceil(data.totalHits / 12) })))
          .finally(() => this.setState({ loading: false }))
     };
   };
 
   
-  handleFormSubmit = pagesName => {
-    this.setState({ pagesName });
+  handleFormSubmit = query => {
+    this.setState({ 
+      query,
+      page: 1,
+      images: [],
+      loading: false,
+      status: 'idle' });
   };
 
   render() {
 
-    const { page, status} = this.state; 
+    const { status, page} = this.state; 
 
       if (status === 'idle') {
         
         return (
           <div> 
-          <Searchbar onSubmit={this.handleFormSubmit}/>
-          <p>Введите текст поиска картинки</p>
+            <Searchbar onSubmit={this.handleFormSubmit}/>
+            <p>Введите текст поиска картинки</p>
 
-          <ImageGallery pagesName={this.state.pagesName}></ImageGallery>
-          <ToastContainer autoClose={3000}/>
-        </div>
-      )
-    }
+            <ImageGallery images={this.state.images}></ImageGallery>
+            <ToastContainer autoClose={3000}/>
+          </div>
+        )
+      }
     
     if (status === 'pending') {
       return (
         <div> 
           <Searchbar onSubmit={this.handleFormSubmit}/>
           <TailSpin/>
-          <ImageGallery pagesName={this.state.pagesName}></ImageGallery>
+          <ImageGallery images={this.state.images}></ImageGallery>
           <ToastContainer autoClose={3000}/>
         </div> 
       );
@@ -69,9 +75,7 @@ class App extends Component {
       return (
         <div>
           <Searchbar onSubmit={this.handleFormSubmit}/>
-          <ul className='ImageGallery'><ImageGalleryItem pictures={page.hits}/></ul>
-          
-          <ImageGallery pagesName={this.state.pagesName}></ImageGallery>
+          <ImageGallery images={this.state.images}></ImageGallery>
           <ToastContainer autoClose={3000}/>
         </div>
       )
@@ -80,9 +84,3 @@ class App extends Component {
 };
 
 export default App;
-// <div>
-//   <Searchbar onSubmit={this.handleFormSubmit}/>
-//   <ImageGallery pagesName={this.state.pagesName}>
-//   </ImageGallery>
-//   <ToastContainer autoClose={3000}/>
-// </div>
