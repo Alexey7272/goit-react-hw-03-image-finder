@@ -1,7 +1,7 @@
 import React,{Component} from "react";
 import Searchbar from "./SearchBar/searchbar";
 import ImageGallery from "./ImageGallery/ImageGallery";
-import ImageGalleryItem from "./ImageGallery/ImageGalleryItem";
+// import ImageGalleryItem from "./ImageGallery/ImageGalleryItem";
 import { TailSpin } from "react-loader-spinner";
 import pictureApi from 'services/picture-api';
 // import Button from "./ImageGallery/LoadMore";
