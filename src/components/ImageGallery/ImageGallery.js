@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import '../Styles/styles.css'
-import { TailSpin } from "react-loader-spinner";
+// import { TailSpin } from "react-loader-spinner";
 import ImageGalleryItem from "./ImageGalleryItem";
-import pictureApi from 'services/picture-api';
+// import pictureApi from 'services/picture-api';
 
 export default class ImageGallery extends Component {
   state = {
