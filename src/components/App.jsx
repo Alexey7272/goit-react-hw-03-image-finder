@@ -45,7 +45,7 @@ class App extends Component {
 
   render() {
 
-    const { status, page} = this.state; 
+    const { status } = this.state; 
 
       if (status === 'idle') {
         
