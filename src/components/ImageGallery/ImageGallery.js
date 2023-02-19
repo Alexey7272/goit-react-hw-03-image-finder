@@ -6,7 +6,7 @@ export default class ImageGallery extends Component {
   
   render() {
     return (
-    <ul className='gallery'>
+    <ul className='ImageGallery'>
       {this.props.images.map(item => <ImageGalleryItem item={item}/>)}
     </ul>
     );
