@@ -13,34 +13,25 @@ class App extends Component {
     query: '',
     page: 1,
     images: [],
-    loading: false,
     status: 'idle',
     totalPages: 0,
+    showBtn: false,
   };
 
-  async componentDidUpdate(prevProps, prevState) {
-    const { query, page, totalPages } = this.state;
+   async componentDidUpdate(prevProps, prevState) {
+    const { query, page } = this.state;
 
     if (prevState.page !== page || prevState.query !== query) {
       await API.getPics(page, query)
-        .then(({ data, status }) => {
+        .then(({ data }) => {
           const { hits, totalHits } = data;
-
-          if (status !== 200) {
-            this.setState({ status: 'rejected' });
-
-            return toast.error(`Sorry, something went wrong. Try again later`);
-          }
-
+ 
           if (totalHits === 0) {
             toast.error(`Sorry, there are no pictures with search "${query}"`);
-
-            setTimeout(() => {
-              this.setState(prevState => {
+              this.setState(() => {
                 return { status: 'rejected' };
               });
-            }, 2500);
-          }
+          };
 
           if (totalHits > 0) {
             const totalPages = Math.ceil(totalHits / 12);
@@ -50,13 +41,8 @@ class App extends Component {
                 images: [...prevState.images, ...hits],
                 status: 'resolved',
                 totalPages: totalPages,
+                showBtn: page < totalPages,
               };
-            });
-          }
-
-          if (page >= totalPages && totalPages !== 0) {
-            toast.info("You've reached the end of the search", {
-              position: toast.POSITION.BOTTOM_CENTER,
             });
           }
         })
@@ -74,7 +60,6 @@ class App extends Component {
       query,
       page: 1,
       images: [],
-      loading: false,
       status: 'pending' });
   };
 
@@ -82,11 +67,10 @@ class App extends Component {
     this.setState( prevState => ({
       page: prevState.page + 1
     }));
-  }
+  };
 
   render() {
-
-    const { status } = this.state; 
+    const { status, showBtn } = this.state; 
 
       if ( status === 'idle' || status === 'rejected' ) {
         return (
@@ -117,7 +101,7 @@ class App extends Component {
             <Searchbar onSubmit={this.handleFormSubmit}/>
             <ImageGallery images={this.state.images}></ImageGallery>
             <ToastContainer autoClose={3000}/>
-            <Button loadMore={this.onLoadMore}/>
+            {showBtn && <Button loadMore={this.onLoadMore}/>}
           </div>
         )
       }
