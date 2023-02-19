@@ -18,11 +18,11 @@ class App extends Component {
     showBtn: false,
   };
 
-   async componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const { query, page } = this.state;
 
     if (prevState.page !== page || prevState.query !== query) {
-      await API.getPics(page, query)
+      API.getPics(page, query)
         .then(({ data }) => {
           const { hits, totalHits } = data;
  
@@ -49,9 +49,6 @@ class App extends Component {
         .catch(error => {
           console.log(error.name, error.message);
         });
-    }
-    if (page > 1) {
-      this.scrollToNextResult();
     }
   }
 
