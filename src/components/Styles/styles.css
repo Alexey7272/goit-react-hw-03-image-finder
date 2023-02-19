@@ -223,7 +223,6 @@ img {
   font-size: larger;
 
   display: flex;
-  justify-content: end;
   align-items: center;
   position: absolute;
   margin-left: 1300px;
